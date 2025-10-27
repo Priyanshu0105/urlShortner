@@ -1,6 +1,7 @@
 const {nanoid} = require("nanoid");
 const URL = require("../model/model")
 async function handleGenerateShortUrl(req ,res) {
+    const allUrls = await URL.find({})
     const shortID = nanoid(8);
     const body = req.body;
     if(!body.url){
@@ -9,10 +10,12 @@ async function handleGenerateShortUrl(req ,res) {
     await URL.create({
         shortId: shortID,
         redirectUrl: body.url,
-        visitHistory: []
+        visitHistory: [],
+        createdBy: req.user._id,
     });
     return res.render("home" ,{
         id : shortID,
+        urls: allUrls,
     })
 }
 async function handleGetAnalytics(req , res){
